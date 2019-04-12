@@ -1,3 +1,6 @@
+// webpack简单配置
+
+
 // webpack必须使用node的模块管理。使用module.exports
 const path = require('path')
 module.exports = {
