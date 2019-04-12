@@ -1,8 +1,6 @@
 // webpack必须使用node的模块管理。使用module.exports
-const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-
+const path = require('path')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 module.exports = {
     mode:'development',
@@ -21,11 +19,6 @@ module.exports = {
         new HtmlWebpackPlugin({
             template:'./src/index.html',
             filename:'index.html'
-        }),
-        new MiniCssExtractPlugin({
-          // filename:'main.css'
-          filename: '[name].css',
-          chunkFilename: '[id].css',
         })
     ],
     module:{
@@ -37,18 +30,11 @@ module.exports = {
           // 1、1个loader使用字符串即可。
           // 2、多个loader使用数组
           // 3、loader可以写成对象形式。适合于需要对loader进行配置的情况
-          use:[
-            MiniCssExtractPlugin.loader,
-            'css-loader'
-          ]
+          use:['style-loader','css-loader']
         },
         {
           test:/\.less$/,
-          use:[
-            MiniCssExtractPlugin.loader,
-            'css-loader',
-            'less-loader'
-          ]
+          use:['style-loader','css-loader','less-loader']
         }
       ]
     }

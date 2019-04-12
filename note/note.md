@@ -181,3 +181,50 @@ npm i less less-loader
 ```
 安装时，必须同时安装less依赖。
 使用时，同样具有顺序。必须先将less文件转化成css文件，再将css文件合并，然后将css文件注入到head中。
+
+#### CSS样式的压缩
+我们可以看到，上面通过css-loader、style-loader等打包后的css样式，全都写在head中的style标签里。
+但是，如果项目比较大，引入的文件比较多的话，就会造成head中有非常多的style标签。这样不太好。我们希望能够通过link标签的形式来引入css文件。这需要使用到一个新的plugin。mini-css-extract-plugin
+ - 安装
+ ```
+ npm i mini-css-extract-plugin
+ ```
+ - 使用
+ ```
+ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+ new MiniCssExtractPlugin({
+          filename:'main.css'
+        })
+
+  rules:[
+        {
+          test:/\.css$/, // css loader负责解析@import这种语法等，将各个css文件合并
+          // style-loader 把css插入到head标签中。
+          // loader的用法：
+          // 1、1个loader使用字符串即可。
+          // 2、多个loader使用数组
+          // 3、loader可以写成对象形式。适合于需要对loader进行配置的情况
+          use:[
+            MiniCssExtractPlugin.loader,
+            'css-loader'
+          ]
+        },
+        {
+          test:/\.less$/,
+          use:[
+            // 'style-loader'
+            MiniCssExtractPlugin.loader,
+            'css-loader',
+            'less-loader'
+          ]
+        }
+  ]      
+
+
+ ```
+ MiniCssExtractPlugin的租用那就是替换掉style-loader，不再将样式都打包到style标签里。而是打包成通过link引入的形式。打包后的文件在head中如下所示：
+ ```
+<link href = 'main.css' ref = 'stylesheet'><>
+ ```
+
+ 如果我们想要对css样式文件进行压缩的话，我们需要再进行一些配置。在webpack4中，新增了optimization属性。再配合optimize-css-assets-webpack-plugin插件进行压缩。
