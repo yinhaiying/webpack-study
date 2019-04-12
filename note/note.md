@@ -60,3 +60,75 @@ npx webpack --config webpack.my.config.js
 ```
 其中npx 可以加也可以不加。
 
+###  webpack的常见配置
+
+#### webpack-dev-server
+我们上面简单配置了webpack,打包后的文件可以在index.html中引用并且使用。但是我们每次打开index.html都是以本地文件的格式打开""
+```
+file:///C:/Users/xxx/Desktop/my-program/webpack-study/dist/index.html
+```
+我们希望在开发时能够以服务器比如ip来访问index.html。也就是说我们需要开启一个服务。
+webpack-dev-server可以帮助我们实现这个功能。
+```
+npm i webpack-dev-server
+```
+webpack-dev-servser的作用是把问价你打包到内存中。然后会使用当前的路径作为请求的路径。
+所谓当前的路径就是你运行webpack-dev-server时的路径。比如：
+```
+PS C:\Users\xxx\Desktop\my-program\webpack-study> npx webpack-dev-server
+```
+我们是在"C:\Users\xxx\Desktop\my-program\webpack-study>"目录下使用命令。那么它会把
+这个目录作为请求资源的路径。
+
+把这个作为请求资源的路径是什么意思了？就是我们通过webpack-dev-server执行之后会生成一个路径：
+提示你项目运行在哪个路径下，
+```
+Project is running at http://localhost:8080/
+```
+通过这个路径去访问就会发现，这就是"C:\Users\xxx\Desktop\my-program\webpack-study"目录下的文件。
+```
+dist      node_modules      src
+package.json   package-lock.json   webpack.config.js
+....
+```
+
+同样，这是在webpack-dev-server没有配置的情况下开启的服务。我们希望能够对webpack-dev-server进行配置。比如让它直接访问dist/下的文件。
+1. 首先在script中配置调用webpack-dev-server。简化调用命令。
+```
+"dev":"webpack-dev-server"
+```
+2. webpack-dev-server的常用配置。
+```
+  devServer:{   // 开发服务器
+    port:3000,
+    progress:true,
+    contentBase:'./dist',  // 将build目录作为默认的静态目录
+    open:true  // 默认打开浏览器
+  }
+```
+通过将contentBase设置成我们想要的目录比如打包后的dist目录。这样的话默认就会将build目录作为静态目录。如果dist目录下有html文件，那么会默认打开html文件。
+更多的东西可以在[webpack-dev-server](https://www.jianshu.com/p/5dd1a6ae1de9)中查看。
+
+webpack-dev-server虽然帮助我们解决了启用服务器的问题，但是在使用过程中我们仍然发现一些问题：
+1. 启用dist目录后，我们如果想要直接打开index.html文件，我们需要在dist目录下定义一个index.html。而且如果重新进行打包的话，这个dist目录会被删除掉，也就是说我们需要重新创建index.html。如果html文件非常重要的话，那么就会显得非常麻烦。
+**因此:我们需要能够自动创建一个html文件，并且将打包后的js嵌入到index.html文件**
+这时候需要使用达到一个插件 html-webpack-plugin
+
+#### HTMLWebpackPlugin
+html-webpack-plugin插件能够通过一个指定的模板，在打包后生成一个以这个模板生成的html目录。
+然后会将打包后的js文件嵌入到index.html中。
+1. **安装**
+```
+npm i html-webpack-plugin -D
+```
+2. **使用**
+```
+plugins:
+[
+  new HtmlWebpackPlugin({
+      template:'./src/index.html',
+      filename:'index.html'
+  })
+]
+
+```
