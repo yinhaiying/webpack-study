@@ -132,3 +132,52 @@ plugins:
 ]
 
 ```
+#### CSS样式的处理
+1. css-loader 和 style-loader
+
+到目前为止，我们已经能够生成html文件，能够自动引入打包后的js文件。但是通过外部引入的文件无法进行处理。因为webpack默认只能打包js模块,无法打包css文件。因此我们需要使用loader来处理这些特殊的模块。
+```
+Module parse failed: Unexpected token (1:4)
+You may need an appropriate loader to handle this file type.
+```
+因此这时候我们需要使用css-loader和style-loader这些特殊的loader来处理css样式。
+  - **安装**
+  ```
+  npm i css-loader style-loader
+  ```
+  - **使用**
+```
+    module:{
+      rules:[
+        {
+          test:/\.css$/, // css loader负责解析@import这种语法等，将各个css文件合并
+          // style-loader 把css插入到head标签中。
+          // loader的用法：
+          // 1、1个loader使用字符串即可。
+          // 2、多个loader使用数组
+          // 3、loader可以写成对象形式。适合于需要对loader进行配置的情况
+          use:['style-loader','css-loader']
+        }
+      ]
+    }
+```
+其中,css-loader用于将@import这些css文件进行合并。
+```
+index.css
+@import './reset.css';
+```
+style-loader用于将合并后的css文件嵌入到head标签中。
+**注意：** loader的使用也具有顺序，必须先合并成一个文件，然后才能嵌入到head中。也就是说
+必须先使用css-loader再使用style-loader。其中webpack的loader的使用顺序是从右到左。
+
+2. less-loader的使用
+```
+npm i less less-loader
+
+{
+  test:/\.less$/,
+  use:['style-loader','css-loader','less-loader']
+}
+```
+安装时，必须同时安装less依赖。
+使用时，同样具有顺序。必须先将less文件转化成css文件，再将css文件合并，然后将css文件注入到head中。

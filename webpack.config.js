@@ -20,5 +20,24 @@ module.exports = {
             template:'./src/index.html',
             filename:'index.html'
         })
-    ]
+    ],
+    module:{
+      rules:[
+        {
+          test:/\.css$/, // css loader负责解析@import这种语法等，将各个css文件合并
+          // style-loader 把css插入到head标签中。
+          // loader的用法：
+          // 1、1个loader使用字符串即可。
+          // 2、多个loader使用数组
+          // 3、loader可以写成对象形式。适合于需要对loader进行配置的情况
+          use:['style-loader','css-loader']
+        },
+        {
+          test:/\.less$/,
+          use:['style-loader','css-loader','less-loader']
+        }
+      ]
+    }
+      
+    
 }

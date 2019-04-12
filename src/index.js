@@ -1,1 +1,3 @@
-alert('haha')
+
+import './index.css'
+console.log('hello world')
