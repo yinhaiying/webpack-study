@@ -2,10 +2,17 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-
-
+const OptimizeCssAssets = require('optimize-css-assets-webpack-plugin')
+const UglifyjsWebpackPlugin = require('uglifyjs-webpack-plugin')
 module.exports = {
-    mode:'development',
+    // 对webpack进行优化，比如压缩等
+    optimization:{
+      minimizer:[
+        new UglifyjsWebpackPlugin(),
+        new OptimizeCssAssets()
+      ]
+    },
+    mode:'production',
     entry:'./src/index.js',
     output:{
         filename:'bundle.js',

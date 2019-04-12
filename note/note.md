@@ -227,4 +227,22 @@ npm i less less-loader
 <link href = 'main.css' ref = 'stylesheet'><>
  ```
 
- 如果我们想要对css样式文件进行压缩的话，我们需要再进行一些配置。在webpack4中，新增了optimization属性。再配合optimize-css-assets-webpack-plugin插件进行压缩。
+ 如果我们想要对css样式文件进行压缩的话，我们需要再进行一些配置。在webpack4中，新增了optimization属性,想要进行压缩，需要在optimization进行开启。再配合optimize-css-assets-webpack-plugin插件进行压缩。这样的话就能够在开发环境下进行压缩了。
+ ```
+    optimization:{
+      minimizer:[
+        new OptimizeCssAssets()
+      ]
+    }
+ ```
+但是使用了这个插件的话，会导致js文件压缩失败。因此需要手动压缩js代码。需要用到uglifyjs-webpack-plugin插件。
+
+```
+  optimization:{
+      minimizer:[
+        new UglifyjsWebpackPlugin(),
+        new OptimizeCssAssets()
+      ]
+    },
+```
+这样的话，css和js文件就都被压缩了，更多的参数可以自己根据官网进行设置。
