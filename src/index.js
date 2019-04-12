@@ -1,1 +1,1 @@
-console.log('hello')
+console.log('入口1：index.js')

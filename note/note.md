@@ -29,3 +29,43 @@ bin目录下的webpack.js文件。通过node进行执行。在这个文件中，
 2. 执行完成之后，会打包到dist/main.js中。通过node main.js执行这个程序，会得到我们原来src/index.js执行相同的结果。
 
 
+## webpack深入
+
+### 打包多页应用
+当我们文件中有多个入口时，我们不能将其打包到一个文件中。
+```
+ERROR in chunk home [entry]
+bundle.js
+Conflict: Multiple chunks emit assets to the same filename bundle.js (chunks 0 and 1)
+```
+也就是说我们需要给出口指定不同的文件名。补鞥呢一个一个地去指定出口名字，可以通过[name][hash]值来进行区分。
+```
+module.exports = {
+    mode:'development',
+    entry:{
+        home:'./src/index.js',
+        about:'./src/about.js',
+    },
+    output:{
+        filename:'[name].[hash].js',
+        path:path.resolve(__dirname,'dist')
+    }
+}
+```
+同样，既然是多页面应用肯定需要多个html文件，因此我们需要设置两个html文件。
+通过HtmlWebpackPlugin创建两次,得到两个html文件。
+```
+    plugins:[
+        new HtmlWebpackPlugin({
+            template:'./index.html',
+            filename:'home.html'
+        }),
+        new HtmlWebpackPlugin({
+            template:'./index.html',
+            filename:'other.html'
+        }),
+
+    ]
+```
+但是打包后的两个js文件都会嵌入到html文件中，而不是对应的js文件嵌入到对应的html文件中。
+我们可以通过设置html-webpack-plugin来指定代码块放入到html文件中。
